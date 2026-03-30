@@ -88,9 +88,9 @@ async function loadData(){
 
       list.innerHTML += `
         <tr class="border">
-          <td class="p-2">${o.company}</td>
-          <td>${o.email}</td>
-          <td>${o.detail}</td>
+          <td class="p-2">${company}</td>
+          <td>${email}</td>
+          <td>${detail}</td>
           <td>${date}</td>
         </tr>
       `
@@ -105,37 +105,6 @@ async function loadData(){
     alert('Gagal load data')
     console.log(err)
   }
-}
-    // 🔔 NOTIFIKASI TEXT
-    if(unread > 0){
-      document.getElementById('notif').innerText = `🔔 ${unread} pesan belum dibaca`
-    } else {
-      document.getElementById('notif').innerText = ''
-    }
-
-    // 🔔 POPUP NOTIF
-    if(data.length > lastCount){
-      alert('Ada pesan baru masuk!')
-    }
-    lastCount = data.length
-
-    // STATS
-    document.getElementById('totalData').innerText = data.length
-    document.getElementById('totalEmail').innerText = data.length
-    document.getElementById('todayData').innerText = today
-
-  } catch(err){
-    alert('Gagal load data')
-    console.log(err)
-  }
-}
-
-// ✔ TANDAI DIBACA
-async function markRead(id){
-  await fetch(API + '/contact/' + id,{
-    method:'PUT'
-  })
-  loadData()
 }
 
 // 🔁 AUTO REFRESH
