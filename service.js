@@ -1,31 +1,36 @@
 const express = require('express')
 const cors = require('cors')
-const mysql = require('mysql2')
+const mongoose = require('mongoose')
 
 const app = express()
 app.use(cors())
 app.use(express.json())
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'parahita'
+// CONNECT MONGODB
+mongoose.connect('ISI_MONGODB_URL_KAMU')
+.then(()=>console.log('MongoDB Connected'))
+
+// SCHEMA
+const OrderSchema = new mongoose.Schema({
+  company: String,
+  email: String,
+  detail: String,
+  created_at: { type: Date, default: Date.now }
 })
 
-app.post('/orders',(req,res)=>{
-  const {company,email,detail} = req.body
-  db.query(
-    'INSERT INTO orders (company,email,detail) VALUES (?,?,?)',
-    [company,email,detail]
-  )
+const Order = mongoose.model('Order', OrderSchema)
+
+// CREATE ORDER
+app.post('/orders', async (req,res)=>{
+  const order = new Order(req.body)
+  await order.save()
   res.json({success:true})
 })
 
-app.get('/orders',(req,res)=>{
-  db.query('SELECT * FROM orders',(err,result)=>{
-    res.json(result)
-  })
+// GET ORDERS
+app.get('/orders', async (req,res)=>{
+  const orders = await Order.find().sort({created_at:-1})
+  res.json(orders)
 })
 
 app.listen(3000,()=>console.log('Server jalan di port 3000'))
