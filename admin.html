@@ -1,77 +1,155 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parahita Prima Sentosa</title>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin - Parahita</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  
 </head>
-<body class="bg-slate-50 text-slate-800">
 
-<!-- NAVBAR -->
-<header class="fixed w-full bg-white/80 backdrop-blur border-b border-slate-200 z-50">
-  <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-    <h1 class="text-xl font-bold">PARAHITA</h1>
-      <button onclick="toggleAdmin()" class="text-sm text-teal-600">Admin</button>
-  </div>
+<body class="bg-slate-100">
+
+<!-- HEADER -->
+<header class="bg-white shadow p-4 flex justify-between items-center">
+  <h1 class="font-bold text-lg">Dashboard Admin</h1>
+  <button onclick="logout()" class="text-red-500 text-sm">Logout</button>
 </header>
-  <section class="h-screen flex items-center justify-center text-center px-6 bg-gradient-to-r from-teal-500 to-blue-500 text-white">
-<!-- ADMIN PANEL -->
-<div id="adminPanel" class="hidden p-6">
-  <h2 class="text-2xl font-bold mb-4">Admin Panel</h2>
-  <table class="w-full border">
-    <thead>
-      <tr class="bg-slate-200">
-        <th class="p-2">Perusahaan</th>
-        <th>Email</th>
-        <th>Detail</th>
-      </tr>
-    </thead>
-    <tbody id="orderList"></tbody>
-  </table>
+
+<div class="p-6 max-w-7xl mx-auto">
+
+  <!-- 🔔 NOTIFIKASI -->
+  <div id="notif" class="mb-4 text-red-500 font-semibold"></div>
+
+  <!-- STATS -->
+  <div class="grid md:grid-cols-3 gap-4 mb-6">
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-sm text-slate-500">Total Hubungi Kami</p>
+      <h2 id="totalData" class="text-2xl font-bold">0</h2>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-sm text-slate-500">Email Masuk</p>
+      <h2 id="totalEmail" class="text-2xl font-bold">0</h2>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-sm text-slate-500">Hari Ini</p>
+      <h2 id="todayData" class="text-2xl font-bold">0</h2>
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white rounded-xl shadow p-6">
+    <h2 class="font-bold mb-4">Data Hubungi Kami</h2>
+
+    <table class="w-full border">
+      <thead>
+        <tr class="bg-slate-200 text-left">
+          <th class="p-2">Nama</th>
+          <th>Email</th>
+          <th>Detail</th>
+          <th>Tanggal</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="orderList"></tbody>
+    </table>
+  </div>
+
 </div>
-</section>
+
 <script>
 const API = 'https://seragamparahita-production.up.railway.app'
-function openOrder(){document.getElementById('orderModal').classList.remove('hidden')}
-function closeOrder(){document.getElementById('orderModal').classList.add('hidden')}
 
-function saveOrder(){
-  const data={
-    company:document.getElementById('company').value,
-    email:document.getElementById('email').value,
-    detail:document.getElementById('detail').value
+// 🔐 PROTEKSI LOGIN
+if(localStorage.getItem('login') !== 'true'){
+  window.location.href = 'login.html'
+}
+
+let lastCount = 0
+
+// LOAD DATA
+async function loadData(){
+  try {
+    const res = await fetch(API + '/contact') // 🔥 endpoint baru
+    const data = await res.json()
+
+    const list = document.getElementById('orderList')
+    list.innerHTML = ''
+
+    let today = 0
+    let unread = 0
+    const todayDate = new Date().toDateString()
+
+    data.forEach(o=>{
+      const date = new Date(o.created_at).toLocaleDateString()
+
+      if(new Date(o.created_at).toDateString() === todayDate){
+        today++
+      }
+
+      if(!o.read){
+        unread++
+      }
+
+      list.innerHTML += `
+        <tr class="border ${!o.read ? 'bg-red-50' : ''}">
+          <td class="p-2">${o.nama}</td>
+          <td>${o.email}</td>
+          <td>${o.detail}</td>
+          <td>${date}</td>
+          <td>
+            <button onclick="markRead('${o._id}')" class="text-sm ${o.read ? 'text-green-600' : 'text-blue-600'}">
+              ${o.read ? '✔ Dibaca' : 'Tandai Dibaca'}
+            </button>
+          </td>
+        </tr>
+      `
+    })
+
+    // 🔔 NOTIFIKASI TEXT
+    if(unread > 0){
+      document.getElementById('notif').innerText = `🔔 ${unread} pesan belum dibaca`
+    } else {
+      document.getElementById('notif').innerText = ''
+    }
+
+    // 🔔 POPUP NOTIF
+    if(data.length > lastCount){
+      alert('Ada pesan baru masuk!')
+    }
+    lastCount = data.length
+
+    // STATS
+    document.getElementById('totalData').innerText = data.length
+    document.getElementById('totalEmail').innerText = data.length
+    document.getElementById('todayData').innerText = today
+
+  } catch(err){
+    alert('Gagal load data')
+    console.log(err)
   }
-
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]')
-  orders.push(data)
-  localStorage.setItem('orders',JSON.stringify(orders))
-
-  alert('Order berhasil dikirim')
-  closeOrder()
 }
 
-function toggleAdmin(){
-  const panel=document.getElementById('adminPanel')
-  panel.classList.toggle('hidden')
-  loadOrders()
-}
-
-function loadOrders(){
-  const list=document.getElementById('orderList')
-  list.innerHTML=''
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]')
-
-  orders.forEach(o=>{
-    list.innerHTML+=`<tr class="border">
-      <td class="p-2">${o.company}</td>
-      <td>${o.email}</td>
-      <td>${o.detail}</td>
-    </tr>`
+// ✔ TANDAI DIBACA
+async function markRead(id){
+  await fetch(API + '/contact/' + id,{
+    method:'PUT'
   })
+  loadData()
 }
+
+// 🔁 AUTO REFRESH
+setInterval(loadData, 5000)
+
+// LOGOUT
+function logout(){
+  localStorage.removeItem('login')
+  window.location.href = 'login.html'
+}
+
+loadData()
 </script>
 
 </body>
