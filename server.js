@@ -9,6 +9,7 @@ app.use(express.json())
 // GANTI DENGAN URL MONGODB KAMU
 mongoose.connect('mongodb+srv://admin:<db_password>@cluster0.hrloeif.mongodb.net/?appName=Cluster0')
 .then(()=>console.log('MongoDB Connected'))
+.catch(err=>console.log(err))
 
 // SCHEMA
 const OrderSchema = new mongoose.Schema({
@@ -20,36 +21,20 @@ const OrderSchema = new mongoose.Schema({
 
 const Order = mongoose.model('Order', OrderSchema)
 
-
-// ================= LOGIN =================
-app.post('/login',(req,res)=>{
-  const {username,password} = req.body
-
-  if(username==='admin' && password==='admin123'){
-    res.json({success:true})
-  } else {
-    res.json({success:false})
-  }
-})
-
-
-// ================= CREATE ORDER =================
+// ROUTES
 app.post('/orders', async (req,res)=>{
   const order = new Order(req.body)
   await order.save()
   res.json({success:true})
 })
 
-
-// ================= GET ORDERS =================
 app.get('/orders', async (req,res)=>{
-  const orders = await Order.find().sort({created_at:-1})
+  const orders = await Order.find()
   res.json(orders)
 })
 
-
+// PORT FIX
 const PORT = process.env.PORT || 3000
-
 app.listen(PORT, () => {
   console.log('Server jalan di port ' + PORT)
 })
