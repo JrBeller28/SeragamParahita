@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard Admin - Parahita</title>
+  <title>Admin Dashboard - Parahita</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -20,8 +20,8 @@
   <div class="grid md:grid-cols-3 gap-4 mb-6">
 
     <div class="bg-white p-6 rounded-xl shadow">
-      <p class="text-sm text-slate-500">Total Hubungi Kami</p>
-      <h2 id="totalData" class="text-2xl font-bold">0</h2>
+      <p class="text-sm text-slate-500">Total Order</p>
+      <h2 id="totalOrder" class="text-2xl font-bold">0</h2>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow">
@@ -31,23 +31,22 @@
 
     <div class="bg-white p-6 rounded-xl shadow">
       <p class="text-sm text-slate-500">Hari Ini</p>
-      <h2 id="todayData" class="text-2xl font-bold">0</h2>
+      <h2 id="todayOrder" class="text-2xl font-bold">0</h2>
     </div>
 
   </div>
 
   <!-- TABLE -->
   <div class="bg-white rounded-xl shadow p-6">
-    <h2 class="font-bold mb-4">Data Hubungi Kami</h2>
+    <h2 class="font-bold mb-4">Data Order</h2>
 
     <table class="w-full border">
       <thead>
         <tr class="bg-slate-200 text-left">
-          <th class="p-2">Nama</th>
+          <th class="p-2">Perusahaan</th>
           <th>Email</th>
           <th>Detail</th>
           <th>Tanggal</th>
-          <th>Aksi</th>
         </tr>
       </thead>
       <tbody id="orderList"></tbody>
@@ -67,8 +66,8 @@ if(localStorage.getItem('login') !== 'true'){
 // LOAD DATA
 async function loadData(){
   try {
-    const res = await fetch(API + '/contact') // 🔥 endpoint baru
-    const data = await res.json()
+    const res = await fetch(API + '/orders')
+    const orders = await res.json()
 
     const list = document.getElementById('orderList')
     list.innerHTML = ''
@@ -76,7 +75,7 @@ async function loadData(){
     let today = 0
     const todayDate = new Date().toDateString()
 
-    data.forEach(o=>{
+    orders.forEach(o=>{
       const date = new Date(o.created_at).toLocaleDateString()
 
       if(new Date(o.created_at).toDateString() === todayDate){
@@ -85,25 +84,18 @@ async function loadData(){
 
       list.innerHTML += `
         <tr class="border">
-          <td class="p-2">${o.nama}</td>
+          <td class="p-2">${o.company}</td>
           <td>${o.email}</td>
           <td>${o.detail}</td>
           <td>${date}</td>
-          <td>
-            <a href="https://wa.me/?text=Halo%20${o.nama},%20kami%20dari%20Parahita%20ingin%20follow%20up%20kebutuhan%20Anda"
-               target="_blank"
-               class="text-green-600 text-sm">
-               Chat
-            </a>
-          </td>
         </tr>
       `
     })
 
-    // STATS
-    document.getElementById('totalData').innerText = data.length
-    document.getElementById('totalEmail').innerText = data.length
-    document.getElementById('todayData').innerText = today
+    // SET STATS
+    document.getElementById('totalOrder').innerText = orders.length
+    document.getElementById('totalEmail').innerText = orders.length
+    document.getElementById('todayOrder').innerText = today
 
   } catch(err){
     alert('Gagal load data')
