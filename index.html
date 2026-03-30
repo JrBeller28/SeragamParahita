@@ -90,16 +90,20 @@
   <section class="py-24 text-center bg-gradient-to-r from-teal-500 to-blue-500 text-white">
     <h3 class="text-3xl font-bold mb-6">Tingkatkan Branding Perusahaan Anda</h3>
     <p class="mb-8">Konsultasikan kebutuhan Anda bersama tim kami sekarang.</p>
-    <a href="#contact" class="bg-white text-teal-600 px-10 py-3 rounded-full font-semibold">Mulai Konsultasi</a>
+    <a href="https://wa.me/6281234567890?text=Halo%20Parahita%20Prima%20Sentosa,%20saya%20ingin%20konsultasi%20seragam%20perusahaan"
+   target="_blank"
+   class="bg-white text-teal-600 px-10 py-3 rounded-full font-semibold hover:bg-slate-100">
+   Mulai Konsultasi
+</a>
   </section>
 
   <!-- Contact -->
   <section id="contact" class="py-24 max-w-4xl mx-auto px-6">
     <h3 class="text-3xl font-bold mb-6 text-center">Hubungi Kami</h3>
-    <form class="grid gap-4">
+    <form class="grid gap-4" onsubmit="kirimForm(event)">
       <input type="text" placeholder="Nama Perusahaan" class="p-3 bg-white border border-slate-300 rounded" />
       <input type="email" placeholder="Email" class="p-3 bg-white border border-slate-300 rounded" />
-      <textarea placeholder="Kebutuhan Proyek" class="p-3 bg-white border border-slate-300 rounded"></textarea>
+      <textarea placeholder="Detail" class="p-3 bg-white border border-slate-300 rounded"></textarea>
        <button onclick="saveOrder()" class="bg-teal-600 text-white w-full py-2 rounded">Kirim Permintaan</button>
     </form>
   </section>
@@ -109,7 +113,7 @@ async function saveOrder(){
   const data = {
     company: document.getElementById('company').value,
     email: document.getElementById('email').value,
-    detail: document.getElementById('detail').value
+    detail: document.getElementById('Detail').value
   }
 
   try {
@@ -119,7 +123,7 @@ async function saveOrder(){
       body: JSON.stringify(data)
     })
 
-    alert('Order berhasil dikirim')
+    alert('Permintaan berhasil dikirim!')
     closeOrder()
 
   } catch (err){
