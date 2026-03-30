@@ -33,38 +33,42 @@
 
 <script>
 const API = 'https://seragamparahita-production.up.railway.app'
+function openOrder(){document.getElementById('orderModal').classList.remove('hidden')}
+function closeOrder(){document.getElementById('orderModal').classList.add('hidden')}
 
+function saveOrder(){
+  const data={
+    company:document.getElementById('company').value,
+    email:document.getElementById('email').value,
+    detail:document.getElementById('detail').value
+  }
 
-// TOGGLE ADMIN
+  let orders=JSON.parse(localStorage.getItem('orders')||'[]')
+  orders.push(data)
+  localStorage.setItem('orders',JSON.stringify(orders))
+
+  alert('Order berhasil dikirim')
+  closeOrder()
+}
+
 function toggleAdmin(){
-  const panel = document.getElementById('adminPanel')
+  const panel=document.getElementById('adminPanel')
   panel.classList.toggle('hidden')
   loadOrders()
 }
 
-// LOAD ORDERS (FIX)
-async function loadOrders(){
-  try {
-    const res = await fetch(API + '/orders')
-    const orders = await res.json()
+function loadOrders(){
+  const list=document.getElementById('orderList')
+  list.innerHTML=''
+  let orders=JSON.parse(localStorage.getItem('orders')||'[]')
 
-    const list = document.getElementById('orderList')
-    list.innerHTML = ''
-
-    orders.forEach(o=>{
-      list.innerHTML += `
-        <tr class="border">
-          <td class="p-2">${o.company}</td>
-          <td>${o.email}</td>
-          <td>${o.detail}</td>
-        </tr>
-      `
-    })
-
-  } catch (err){
-    alert('Gagal load data')
-    console.log(err)
-  }
+  orders.forEach(o=>{
+    list.innerHTML+=`<tr class="border">
+      <td class="p-2">${o.company}</td>
+      <td>${o.email}</td>
+      <td>${o.detail}</td>
+    </tr>`
+  })
 }
 </script>
 
