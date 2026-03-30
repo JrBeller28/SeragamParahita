@@ -55,73 +55,70 @@
 
 <script>
 const API = 'https://seragamparahita-production.up.railway.app'
-function openOrder(){document.getElementById('orderModal').classList.remove('hidden')}
-function closeOrder(){document.getElementById('orderModal').classList.add('hidden')}
 
-function saveOrder(){
-  const data={
-    company:document.getElementById('company').value,
-    email:document.getElementById('email').value,
-    detail:document.getElementById('detail').value
-  }
-
-  async function saveOrder(){
-  const data={
-    company:document.getElementById('company').value,
-    email:document.getElementById('email').value,
-    detail:document.getElementById('detail').value
-  }
-
-  await fetch(API + '/orders',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(data)
-  })
-
-  alert('Order berhasil dikirim')
-  closeOrder()
+// MODAL
+function openOrder(){
+  document.getElementById('orderModal').classList.remove('hidden')
 }
 
-  alert('Order berhasil dikirim')
-  closeOrder()
+function closeOrder(){
+  document.getElementById('orderModal').classList.add('hidden')
 }
 
+// SAVE ORDER (FIX)
+async function saveOrder(){
+  const data = {
+    company: document.getElementById('company').value,
+    email: document.getElementById('email').value,
+    detail: document.getElementById('detail').value
+  }
+
+  try {
+    await fetch(API + '/orders',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    })
+
+    alert('Order berhasil dikirim')
+    closeOrder()
+
+  } catch (err){
+    alert('Server error')
+    console.log(err)
+  }
+}
+
+// TOGGLE ADMIN
 function toggleAdmin(){
-  const panel=document.getElementById('adminPanel')
+  const panel = document.getElementById('adminPanel')
   panel.classList.toggle('hidden')
   loadOrders()
 }
 
-function loadOrders(){
-  const list=document.getElementById('orderList')
-  list.innerHTML=''
-  async function loadOrders(){
-  const res = await fetch(API + '/orders')
-  const orders = await res.json()
+// LOAD ORDERS (FIX)
+async function loadOrders(){
+  try {
+    const res = await fetch(API + '/orders')
+    const orders = await res.json()
 
-  const list=document.getElementById('orderList')
-  list.innerHTML=''
+    const list = document.getElementById('orderList')
+    list.innerHTML = ''
 
-  orders.forEach(o=>{
-    list.innerHTML+=`<tr class="border">
-      <td class="p-2">${o.company}</td>
-      <td>${o.email}</td>
-      <td>${o.detail}</td>
-    </tr>`
-  })
-}
-try {
-  await fetch(...)
-} catch (err) {
-  alert('Server error')
-}
-  orders.forEach(o=>{
-    list.innerHTML+=`<tr class="border">
-      <td class="p-2">${o.company}</td>
-      <td>${o.email}</td>
-      <td>${o.detail}</td>
-    </tr>`
-  })
+    orders.forEach(o=>{
+      list.innerHTML += `
+        <tr class="border">
+          <td class="p-2">${o.company}</td>
+          <td>${o.email}</td>
+          <td>${o.detail}</td>
+        </tr>
+      `
+    })
+
+  } catch (err){
+    alert('Gagal load data')
+    console.log(err)
+  }
 }
 </script>
 
