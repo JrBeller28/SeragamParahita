@@ -2,40 +2,114 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Login Admin</title>
+  <title>Admin Dashboard - Parahita</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex items-center justify-center h-screen bg-slate-100">
 
-<div class="bg-white p-8 rounded shadow w-80">
-  <h2 class="text-xl font-bold mb-4 text-center">Login Admin</h2>
-  <input id="username" placeholder="Username" class="w-full mb-3 p-2 border rounded" />
-  <input id="password" type="password" placeholder="Password" class="w-full mb-3 p-2 border rounded" />
-  <button onclick="login()" class="w-full bg-teal-600 text-white py-2 rounded">Login</button>
+<body class="bg-slate-100">
+
+<!-- HEADER -->
+<header class="bg-white shadow p-4 flex justify-between items-center">
+  <h1 class="font-bold text-lg">Dashboard Admin</h1>
+  <button onclick="logout()" class="text-red-500 text-sm">Logout</button>
+</header>
+
+<div class="p-6 max-w-7xl mx-auto">
+
+  <!-- STATS -->
+  <div class="grid md:grid-cols-3 gap-4 mb-6">
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-sm text-slate-500">Total Order</p>
+      <h2 id="totalOrder" class="text-2xl font-bold">0</h2>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-sm text-slate-500">Email Masuk</p>
+      <h2 id="totalEmail" class="text-2xl font-bold">0</h2>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow">
+      <p class="text-sm text-slate-500">Hari Ini</p>
+      <h2 id="todayOrder" class="text-2xl font-bold">0</h2>
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white rounded-xl shadow p-6">
+    <h2 class="font-bold mb-4">Data Order</h2>
+
+    <table class="w-full border">
+      <thead>
+        <tr class="bg-slate-200 text-left">
+          <th class="p-2">Perusahaan</th>
+          <th>Email</th>
+          <th>Detail</th>
+          <th>Tanggal</th>
+        </tr>
+      </thead>
+      <tbody id="orderList"></tbody>
+    </table>
+  </div>
+
 </div>
 
 <script>
 const API = 'https://seragamparahita-production.up.railway.app'
 
-async function login(){
-  const res = await fetch(API + '/login',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      username:username.value,
-      password:password.value
+// 🔐 PROTEKSI LOGIN
+if(localStorage.getItem('login') !== 'true'){
+  window.location.href = 'login.html'
+}
+
+// LOAD DATA
+async function loadData(){
+  try {
+    const res = await fetch(API + '/orders')
+    const orders = await res.json()
+
+    const list = document.getElementById('orderList')
+    list.innerHTML = ''
+
+    let today = 0
+    const todayDate = new Date().toDateString()
+
+    orders.forEach(o=>{
+      const date = new Date(o.created_at).toLocaleDateString()
+
+      if(new Date(o.created_at).toDateString() === todayDate){
+        today++
+      }
+
+      list.innerHTML += `
+        <tr class="border">
+          <td class="p-2">${o.company}</td>
+          <td>${o.email}</td>
+          <td>${o.detail}</td>
+          <td>${date}</td>
+        </tr>
+      `
     })
-  })
 
-  const data = await res.json()
+    // SET STATS
+    document.getElementById('totalOrder').innerText = orders.length
+    document.getElementById('totalEmail').innerText = orders.length
+    document.getElementById('todayOrder').innerText = today
 
-  if(data.success){
-    localStorage.setItem('login','true')
-    window.location.href = 'admin.html'
-  } else {
-    alert('Login gagal')
+  } catch(err){
+    alert('Gagal load data')
+    console.log(err)
   }
 }
+
+// LOGOUT
+function logout(){
+  localStorage.removeItem('login')
+  window.location.href = 'login.html'
+}
+
+loadData()
 </script>
 
 </body>
