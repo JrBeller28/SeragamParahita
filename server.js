@@ -37,17 +37,12 @@ const ContactSchema = new mongoose.Schema({
   company: String,
   email: String,
   detail: String,
-  read: { type: Boolean, default: false }, // 🔥 NEW
   created_at: { type: Date, default: Date.now }
 })
 
 const Order = mongoose.model('Order', OrderSchema)
 
 // ROUTES
-app.put('/contact/:id', async (req,res)=>{
-  await Contact.findByIdAndUpdate(req.params.id, { read: true })
-  res.json({success:true})
-})
 app.post('/orders', async (req,res)=>{
   try {
     const order = new Order(req.body)
