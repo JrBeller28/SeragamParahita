@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parahita Prima Sentosa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+  <!-- Navbar -->
+  <header class="fixed w-full bg-white/80 backdrop-blur border-b border-slate-200 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+      <h1 class="text-xl font-bold tracking-wide text-slate-700">PARAHITA</h1>
+      <nav class="space-x-6 hidden md:block text-sm">
+        <a href="#about" class="hover:text-teal-600">Tentang</a>
+        <a href="#services" class="hover:text-teal-600">Layanan</a>
+        <a href="#portfolio" class="hover:text-teal-600">Portfolio</a>
+        <a href="#contact" class="hover:text-teal-600">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="h-screen flex items-center justify-center text-center px-6 bg-gradient-to-r from-teal-500 to-blue-500 text-white">
+    <div class="max-w-3xl">
+      <h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Partner Produksi Seragam & Merchandise Profesional</h2>
+      <p class="text-lg mb-8 opacity-90">Solusi terpercaya untuk kebutuhan perusahaan dengan kualitas tinggi dan desain modern.</p>
+      <div class="flex flex-col md:flex-row gap-4 justify-center">
+        <a href="#contact" class="bg-white text-teal-600 px-8 py-3 rounded-full font-semibold hover:bg-slate-100">Konsultasi Proyek</a>
+        <a href="#portfolio" class="border border-white px-8 py-3 rounded-full hover:bg-white hover:text-teal-600">Lihat Portfolio</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Logos -->
+  <section class="py-10 border-y border-slate-200 text-center bg-white">
+    <p class="text-slate-500 mb-4">Dipercaya oleh perusahaan & brand ternama</p>
+    <div class="flex justify-center gap-10 opacity-60 text-sm">
+      <span>Company A</span>
+      <span>Company B</span>
+      <span>Company C</span>
+      <span>Company D</span>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-24 max-w-5xl mx-auto px-6 text-center">
+    <h3 class="text-3xl font-bold mb-6">Tentang Kami</h3>
+    <p class="text-slate-600 text-lg">Parahita Prima Sentosa adalah mitra produksi terpercaya untuk kebutuhan seragam dan merchandise perusahaan dengan fokus pada kualitas, detail, dan ketepatan waktu.</p>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="py-24 bg-slate-100">
+    <div class="max-w-6xl mx-auto px-6">
+      <h3 class="text-3xl font-bold mb-12 text-center">Layanan Unggulan</h3>
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <div class="bg-white border border-slate-200 p-8 rounded-2xl hover:shadow-lg transition">
+          <h4 class="font-bold text-xl mb-4">Seragam Perusahaan</h4>
+          <p class="text-slate-600">Desain modern dengan bahan nyaman untuk meningkatkan citra profesional perusahaan Anda.</p>
+        </div>
+
+        <div class="bg-white border border-slate-200 p-8 rounded-2xl hover:shadow-lg transition">
+          <h4 class="font-bold text-xl mb-4">Merchandise Branding</h4>
+          <p class="text-slate-600">Produk merchandise menarik untuk kebutuhan promosi dan branding yang efektif.</p>
+        </div>
+
+        <div class="bg-white border border-slate-200 p-8 rounded-2xl hover:shadow-lg transition">
+          <h4 class="font-bold text-xl mb-4">Produksi Skala Besar</h4>
+          <p class="text-slate-600">Proses produksi efisien dan konsisten untuk memenuhi kebutuhan dalam jumlah besar.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio -->
+  <section id="portfolio" class="py-24 max-w-6xl mx-auto px-6">
+    <h3 class="text-3xl font-bold mb-12 text-center">Portfolio Proyek</h3>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="h-56 bg-slate-200 rounded-xl"></div>
+      <div class="h-56 bg-slate-200 rounded-xl"></div>
+      <div class="h-56 bg-slate-200 rounded-xl"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 text-center bg-gradient-to-r from-teal-500 to-blue-500 text-white">
+    <h3 class="text-3xl font-bold mb-6">Tingkatkan Branding Perusahaan Anda</h3>
+    <p class="mb-8">Konsultasikan kebutuhan Anda bersama tim kami sekarang.</p>
+    <a href="#contact" class="bg-white text-teal-600 px-10 py-3 rounded-full font-semibold">Mulai Konsultasi</a>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-24 max-w-4xl mx-auto px-6">
+    <h3 class="text-3xl font-bold mb-6 text-center">Hubungi Kami</h3>
+    <form class="grid gap-4">
+      <input type="text" placeholder="Nama Perusahaan" class="p-3 bg-white border border-slate-300 rounded" />
+      <input type="email" placeholder="Email" class="p-3 bg-white border border-slate-300 rounded" />
+      <textarea placeholder="Kebutuhan Proyek" class="p-3 bg-white border border-slate-300 rounded"></textarea>
+      <button class="bg-teal-600 text-white py-3 rounded font-semibold hover:bg-teal-700">Kirim Permintaan</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 text-center p-6 text-slate-500">
+    <p>© 2026 Parahita Prima Sentosa. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
