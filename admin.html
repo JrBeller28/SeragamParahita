@@ -47,7 +47,6 @@
           <th>Email</th>
           <th>Detail</th>
           <th>Tanggal</th>
-          <th>Aksi</th>
         </tr>
       </thead>
       <tbody id="orderList"></tbody>
@@ -65,40 +64,20 @@ if(localStorage.getItem('login') !== 'true'){
 }
 
 // LOAD DATA
-async function loadData(){
-  try {
-    const res = await fetch(API + '/contact') // 🔥 endpoint baru
-    const data = await res.json()
+function loadOrders(){
+  const list=document.getElementById('orderList')
+  list.innerHTML=''
+  let orders=JSON.parse(localStorage.getItem('orders')||'[]')
 
-    const list = document.getElementById('orderList')
-    list.innerHTML = ''
-
-    let today = 0
-    const todayDate = new Date().toDateString()
-
-    data.forEach(o=>{
-      const date = new Date(o.created_at).toLocaleDateString()
-
-      if(new Date(o.created_at).toDateString() === todayDate){
-        today++
-      }
-
-      list.innerHTML += `
-        <tr class="border">
-          <td class="p-2">${o.nama}</td>
-          <td>${o.email}</td>
-          <td>${o.detail}</td>
-          <td>${date}</td>
-          <td>
-            <a href="https://wa.me/?text=Halo%20${o.nama},%20kami%20dari%20Parahita%20ingin%20follow%20up%20kebutuhan%20Anda"
-               target="_blank"
-               class="text-green-600 text-sm">
-               Chat
-            </a>
-          </td>
-        </tr>
-      `
-    })
+  orders.forEach(o=>{
+    list.innerHTML+=`<tr class="border">
+      <td class="p-2">${o.company}</td>
+      <td>${o.email}</td>
+      <td>${o.detail}</td>
+      <td>${o.date}</td>
+    </tr>`
+  })
+}
 
     // STATS
     document.getElementById('totalData').innerText = data.length
