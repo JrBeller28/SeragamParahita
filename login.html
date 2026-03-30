@@ -2,114 +2,80 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard - Parahita</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin - Parahita</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-slate-100">
+<body class="bg-gradient-to-r from-teal-500 to-blue-500 flex items-center justify-center h-screen">
 
-<!-- HEADER -->
-<header class="bg-white shadow p-4 flex justify-between items-center">
-  <h1 class="font-bold text-lg">Dashboard Admin</h1>
-  <button onclick="logout()" class="text-red-500 text-sm">Logout</button>
-</header>
+<div class="bg-white p-8 rounded-2xl shadow-xl w-80">
 
-<div class="p-6 max-w-7xl mx-auto">
+  <h2 class="text-2xl font-bold mb-6 text-center text-slate-700">
+    Login Admin
+  </h2>
 
-  <!-- STATS -->
-  <div class="grid md:grid-cols-3 gap-4 mb-6">
+  <input id="username" placeholder="Username"
+    class="w-full mb-3 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
 
-    <div class="bg-white p-6 rounded-xl shadow">
-      <p class="text-sm text-slate-500">Total Order</p>
-      <h2 id="totalOrder" class="text-2xl font-bold">0</h2>
-    </div>
+  <input id="password" type="password" placeholder="Password"
+    class="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
 
-    <div class="bg-white p-6 rounded-xl shadow">
-      <p class="text-sm text-slate-500">Email Masuk</p>
-      <h2 id="totalEmail" class="text-2xl font-bold">0</h2>
-    </div>
+  <button onclick="login()"
+    id="btnLogin"
+    class="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition">
+    Login
+  </button>
 
-    <div class="bg-white p-6 rounded-xl shadow">
-      <p class="text-sm text-slate-500">Hari Ini</p>
-      <h2 id="todayOrder" class="text-2xl font-bold">0</h2>
-    </div>
-
-  </div>
-
-  <!-- TABLE -->
-  <div class="bg-white rounded-xl shadow p-6">
-    <h2 class="font-bold mb-4">Data Order</h2>
-
-    <table class="w-full border">
-      <thead>
-        <tr class="bg-slate-200 text-left">
-          <th class="p-2">Perusahaan</th>
-          <th>Email</th>
-          <th>Detail</th>
-          <th>Tanggal</th>
-        </tr>
-      </thead>
-      <tbody id="orderList"></tbody>
-    </table>
-  </div>
+  <p id="error" class="text-red-500 text-sm mt-3 text-center hidden">
+    Username / Password salah
+  </p>
 
 </div>
 
 <script>
 const API = 'https://seragamparahita-production.up.railway.app'
 
-// 🔐 PROTEKSI LOGIN
-if(localStorage.getItem('login') !== 'true'){
-  window.location.href = 'login.html'
+// AUTO REDIRECT JIKA SUDAH LOGIN
+if(localStorage.getItem('login') === 'true'){
+  window.location.href = 'admin.html'
 }
 
-// LOAD DATA
-async function loadData(){
+async function login(){
+  const btn = document.getElementById('btnLogin')
+  const error = document.getElementById('error')
+
+  btn.innerText = 'Loading...'
+  btn.disabled = true
+  error.classList.add('hidden')
+
   try {
-    const res = await fetch(API + '/orders')
-    const orders = await res.json()
-
-    const list = document.getElementById('orderList')
-    list.innerHTML = ''
-
-    let today = 0
-    const todayDate = new Date().toDateString()
-
-    orders.forEach(o=>{
-      const date = new Date(o.created_at).toLocaleDateString()
-
-      if(new Date(o.created_at).toDateString() === todayDate){
-        today++
-      }
-
-      list.innerHTML += `
-        <tr class="border">
-          <td class="p-2">${o.company}</td>
-          <td>${o.email}</td>
-          <td>${o.detail}</td>
-          <td>${date}</td>
-        </tr>
-      `
+    const res = await fetch(API + '/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+      })
     })
 
-    // SET STATS
-    document.getElementById('totalOrder').innerText = orders.length
-    document.getElementById('totalEmail').innerText = orders.length
-    document.getElementById('todayOrder').innerText = today
+    const data = await res.json()
+
+    if(data.success){
+      localStorage.setItem('login','true')
+      window.location.href = 'admin.html'
+    } else {
+      error.classList.remove('hidden')
+    }
 
   } catch(err){
-    alert('Gagal load data')
+    alert('Server error / backend belum aktif')
     console.log(err)
   }
-}
 
-// LOGOUT
-function logout(){
-  localStorage.removeItem('login')
-  window.location.href = 'login.html'
+  btn.innerText = 'Login'
+  btn.disabled = false
 }
-
-loadData()
 </script>
 
 </body>
