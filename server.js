@@ -6,6 +6,17 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+// LOGIN ROUTE
+app.post('/login',(req,res)=>{
+  const {username,password} = req.body
+
+  if(username === 'admin' && password === 'admin123'){
+    res.json({success:true})
+  } else {
+    res.json({success:false})
+  }
+})
+
 // DEBUG GLOBAL
 process.on('uncaughtException', err => {
   console.error('UNCAUGHT ERROR:', err)
