@@ -2,8 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard - Parahita</title>
-  <button onclick="logout()" class="text-sm text-teal-600">Log Out</button>
+  <title>Dashboard Admin - Parahita</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -21,8 +20,8 @@
   <div class="grid md:grid-cols-3 gap-4 mb-6">
 
     <div class="bg-white p-6 rounded-xl shadow">
-      <p class="text-sm text-slate-500">Total Order</p>
-      <h2 id="totalOrder" class="text-2xl font-bold">0</h2>
+      <p class="text-sm text-slate-500">Total Hubungi Kami</p>
+      <h2 id="totalData" class="text-2xl font-bold">0</h2>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow">
@@ -32,72 +31,85 @@
 
     <div class="bg-white p-6 rounded-xl shadow">
       <p class="text-sm text-slate-500">Hari Ini</p>
-      <h2 id="todayOrder" class="text-2xl font-bold">0</h2>
+      <h2 id="todayData" class="text-2xl font-bold">0</h2>
     </div>
 
   </div>
 
-  <!-- ADMIN PANEL -->
-<div id="adminPanel" class="hidden p-6">
-  <h2 class="text-2xl font-bold mb-4">Admin Panel</h2>
-  <table class="w-full border">
-    <thead>
-      <tr class="bg-slate-200">
-        <th class="p-2">Perusahaan</th>
-        <th>Email</th>
-        <th>Detail</th>
-      </tr>
-    </thead>
-    <tbody id="orderList"></tbody>
-  </table>
+  <!-- TABLE -->
+  <div class="bg-white rounded-xl shadow p-6">
+    <h2 class="font-bold mb-4">Data Hubungi Kami</h2>
+
+    <table class="w-full border">
+      <thead>
+        <tr class="bg-slate-200 text-left">
+          <th class="p-2">Nama</th>
+          <th>Email</th>
+          <th>Detail</th>
+          <th>Tanggal</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="orderList"></tbody>
+    </table>
+  </div>
+
 </div>
 
 <script>
 const API = 'https://seragamparahita-production.up.railway.app'
-function openOrder(){document.getElementById('orderModal').classList.remove('hidden')}
-function closeOrder(){document.getElementById('orderModal').classList.add('hidden')}
+
 // 🔐 PROTEKSI LOGIN
 if(localStorage.getItem('login') !== 'true'){
   window.location.href = 'login.html'
 }
-function saveOrder(){
-  const data={
-    company:document.getElementById('company').value,
-    email:document.getElementById('email').value,
-    detail:document.getElementById('detail').value
-  }
 
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]')
-  orders.push(data)
-  localStorage.setItem('orders',JSON.stringify(orders))
+// LOAD DATA
+async function loadData(){
+  try {
+    const res = await fetch(API + '/contact') // 🔥 endpoint baru
+    const data = await res.json()
 
-  alert('Order berhasil dikirim')
-  closeOrder()
-}
+    const list = document.getElementById('orderList')
+    list.innerHTML = ''
 
-function toggleAdmin(){
-  const panel=document.getElementById('adminPanel')
-  panel.classList.toggle('hidden')
-  loadOrders()
-}
+    let today = 0
+    const todayDate = new Date().toDateString()
 
-function loadOrders(){
-  const list=document.getElementById('orderList')
-  list.innerHTML=''
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]')
+    data.forEach(o=>{
+      const date = new Date(o.created_at).toLocaleDateString()
 
-  orders.forEach(o=>{
-    list.innerHTML+=`<tr class="border">
-      <td class="p-2">${o.company}</td>
-      <td>${o.email}</td>
-      <td>${o.detail}</td>
-    </tr>`
-  })
-}
-catch(err){
+      if(new Date(o.created_at).toDateString() === todayDate){
+        today++
+      }
+
+      list.innerHTML += `
+        <tr class="border">
+          <td class="p-2">${o.nama}</td>
+          <td>${o.email}</td>
+          <td>${o.detail}</td>
+          <td>${date}</td>
+          <td>
+            <a href="https://wa.me/?text=Halo%20${o.nama},%20kami%20dari%20Parahita%20ingin%20follow%20up%20kebutuhan%20Anda"
+               target="_blank"
+               class="text-green-600 text-sm">
+               Chat
+            </a>
+          </td>
+        </tr>
+      `
+    })
+
+    // STATS
+    document.getElementById('totalData').innerText = data.length
+    document.getElementById('totalEmail').innerText = data.length
+    document.getElementById('todayData').innerText = today
+
+  } catch(err){
     alert('Gagal load data')
     console.log(err)
   }
+}
 
 // LOGOUT
 function logout(){
