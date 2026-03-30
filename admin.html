@@ -11,6 +11,7 @@
 <!-- HEADER -->
 <header class="bg-white shadow p-4 flex justify-between items-center">
   <h1 class="font-bold text-lg">Dashboard Admin</h1>
+  <div id="notif" class="mb-4 text-red-500 font-semibold"></div>
   <button onclick="logout()" class="text-red-500 text-sm">Logout</button>
 </header>
 
@@ -58,52 +59,85 @@
 <script>
 const API = 'https://seragamparahita-production.up.railway.app'
 
-// 🔐 PROTEKSI LOGIN
+// PROTEKSI LOGIN
 if(localStorage.getItem('login') !== 'true'){
   window.location.href = 'login.html'
 }
 
-// LOAD DATA
+let lastCount = 0
+
 async function loadData(){
   try {
-    const res = await fetch(API + '/orders')
-    const orders = await res.json()
+    const res = await fetch(API + '/contact')
+    const data = await res.json()
 
     const list = document.getElementById('orderList')
     list.innerHTML = ''
 
     let today = 0
+    let unread = 0
     const todayDate = new Date().toDateString()
 
-    orders.forEach(o=>{
+    data.forEach(o=>{
       const date = new Date(o.created_at).toLocaleDateString()
 
       if(new Date(o.created_at).toDateString() === todayDate){
         today++
       }
 
+      if(!o.read){
+        unread++
+      }
+
       list.innerHTML += `
-        <tr class="border">
-          <td class="p-2">${o.company}</td>
+        <tr class="border ${!o.read ? 'bg-red-50' : ''}">
+          <td class="p-2">${o.nama}</td>
           <td>${o.email}</td>
           <td>${o.detail}</td>
           <td>${date}</td>
+          <td>
+            <button onclick="markRead('${o._id}')" class="text-blue-500 text-sm">
+              ${o.read ? '✔ Dibaca' : 'Tandai Dibaca'}
+            </button>
+          </td>
         </tr>
       `
     })
 
-    // SET STATS
-    document.getElementById('totalOrder').innerText = orders.length
-    document.getElementById('totalEmail').innerText = orders.length
-    document.getElementById('todayOrder').innerText = today
+    // NOTIFIKASI 🔔
+    if(unread > 0){
+      document.getElementById('notif').innerText = `🔔 ${unread} pesan baru belum dibaca`
+    } else {
+      document.getElementById('notif').innerText = ''
+    }
+
+    // NOTIFIKASI POPUP (opsional)
+    if(data.length > lastCount){
+      alert('Ada pesan baru masuk!')
+    }
+    lastCount = data.length
+
+    // STATS
+    document.getElementById('totalData').innerText = data.length
+    document.getElementById('totalEmail').innerText = data.length
+    document.getElementById('todayData').innerText = today
 
   } catch(err){
-    alert('Gagal load data')
     console.log(err)
   }
 }
 
-// LOGOUT
+// TANDAI DIBACA
+async function markRead(id){
+  await fetch(API + '/contact/' + id,{
+    method:'PUT'
+  })
+  loadData()
+}
+
+// AUTO REFRESH (REALTIME SIMULASI)
+setInterval(loadData, 5000)
+
 function logout(){
   localStorage.removeItem('login')
   window.location.href = 'login.html'
