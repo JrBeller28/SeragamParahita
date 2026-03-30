@@ -64,25 +64,38 @@ if(localStorage.getItem('login') !== 'true'){
 }
 
 // LOAD DATA
-function loadOrders(){
-  const list=document.getElementById('orderList')
-  list.innerHTML=''
-  let orders=JSON.parse(localStorage.getItem('orders')||'[]')
+async function loadData(){
+  try {
+    const res = await fetch(API + '/orders')
+    const orders = await res.json()
 
-  orders.forEach(o=>{
-    list.innerHTML+=`<tr class="border">
-      <td class="p-2">${o.company}</td>
-      <td>${o.email}</td>
-      <td>${o.detail}</td>
-      <td>${o.date}</td>
-    </tr>`
-  })
-}
+    const list = document.getElementById('orderList')
+    list.innerHTML = ''
 
-    // STATS
-    document.getElementById('totalData').innerText = data.length
-    document.getElementById('totalEmail').innerText = data.length
-    document.getElementById('todayData').innerText = today
+    let today = 0
+    const todayDate = new Date().toDateString()
+
+    orders.forEach(o=>{
+      const date = new Date(o.created_at).toLocaleDateString()
+
+      if(new Date(o.created_at).toDateString() === todayDate){
+        today++
+      }
+
+      list.innerHTML += `
+        <tr class="border">
+          <td class="p-2">${o.company}</td>
+          <td>${o.email}</td>
+          <td>${o.detail}</td>
+          <td>${date}</td>
+        </tr>
+      `
+    })
+
+    // SET STATS
+    document.getElementById('totalOrder').innerText = orders.length
+    document.getElementById('totalEmail').innerText = orders.length
+    document.getElementById('todayOrder').innerText = today
 
   } catch(err){
     alert('Gagal load data')
