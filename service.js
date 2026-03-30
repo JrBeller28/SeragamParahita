@@ -7,7 +7,7 @@ app.use(cors())
 app.use(express.json())
 
 // CONNECT MONGODB
-mongoose.connect('ISI_MONGODB_URL_KAMU')
+mongoose.connect('mongodb+srv://admin:<db_password>@cluster0.hrloeif.mongodb.net/?appName=Cluster0')
 .then(()=>console.log('MongoDB Connected'))
 
 // SCHEMA
