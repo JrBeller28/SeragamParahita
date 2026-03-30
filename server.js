@@ -29,7 +29,7 @@ mongoose.connect('mongodb+srv://admin:parahita2026@cluster0.hrloeif.mongodb.net/
 
 // ✅ SCHEMA HUBUNGI KAMI
 const ContactSchema = new mongoose.Schema({
-  nama: String,
+  company: String,
   email: String,
   detail: String,
   read: { type: Boolean, default: false }, // 🔥 penting
