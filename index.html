@@ -100,9 +100,35 @@
       <input type="text" placeholder="Nama Perusahaan" class="p-3 bg-white border border-slate-300 rounded" />
       <input type="email" placeholder="Email" class="p-3 bg-white border border-slate-300 rounded" />
       <textarea placeholder="Kebutuhan Proyek" class="p-3 bg-white border border-slate-300 rounded"></textarea>
-      <button class="bg-teal-600 text-white py-3 rounded font-semibold hover:bg-teal-700">Kirim Permintaan</button>
+       <button onclick="saveOrder()" class="bg-teal-600 text-white w-full py-2 rounded">Kirim Permintaan</button>
     </form>
   </section>
+  <script>
+const API = 'https://seragamparahita-production.up.railway.app'
+async function saveOrder(){
+  const data = {
+    company: document.getElementById('company').value,
+    email: document.getElementById('email').value,
+    detail: document.getElementById('detail').value
+  }
+
+  try {
+    await fetch(API + '/orders',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    })
+
+    alert('Order berhasil dikirim')
+    closeOrder()
+
+  } catch (err){
+    alert('Server error')
+    console.log(err)
+  }
+}
+
+</script>
 
   <!-- Footer -->
   <footer class="border-t border-slate-200 text-center p-6 text-slate-500">
