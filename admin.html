@@ -67,47 +67,45 @@ if(localStorage.getItem('login') !== 'true'){
   window.location.href = 'login.html'
 }
 
-let lastCount = 0
-
 // LOAD DATA
 async function loadData(){
   try {
-    const res = await fetch(API + '/contact') // 🔥 endpoint baru
-    const data = await res.json()
+    const res = await fetch(API + '/orders')
+    const orders = await res.json()
 
     const list = document.getElementById('orderList')
     list.innerHTML = ''
 
     let today = 0
-    let unread = 0
     const todayDate = new Date().toDateString()
 
-    data.forEach(o=>{
+    orders.forEach(o=>{
       const date = new Date(o.created_at).toLocaleDateString()
 
       if(new Date(o.created_at).toDateString() === todayDate){
         today++
       }
 
-      if(!o.read){
-        unread++
-      }
-
       list.innerHTML += `
-        <tr class="border ${!o.read ? 'bg-red-50' : ''}">
-          <td class="p-2">${o.nama}</td>
+        <tr class="border">
+          <td class="p-2">${o.company}</td>
           <td>${o.email}</td>
           <td>${o.detail}</td>
           <td>${date}</td>
-          <td>
-            <button onclick="markRead('${o._id}')" class="text-sm ${o.read ? 'text-green-600' : 'text-blue-600'}">
-              ${o.read ? '✔ Dibaca' : 'Tandai Dibaca'}
-            </button>
-          </td>
         </tr>
       `
     })
 
+    // SET STATS
+    document.getElementById('totalOrder').innerText = orders.length
+    document.getElementById('totalEmail').innerText = orders.length
+    document.getElementById('todayOrder').innerText = today
+
+  } catch(err){
+    alert('Gagal load data')
+    console.log(err)
+  }
+}
     // 🔔 NOTIFIKASI TEXT
     if(unread > 0){
       document.getElementById('notif').innerText = `🔔 ${unread} pesan belum dibaca`
