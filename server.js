@@ -7,7 +7,7 @@ app.use(cors())
 app.use(express.json())
 
 // GANTI DENGAN URL MONGODB KAMU
-mongoose.connect('mongodb+srv://admin:parahita2026@cluster0.hrloeif.mongodb.net/parahita')
+mongoose.connect('mongodb+srv://admin:<parahita2026>@cluster0.hrloeif.mongodb.net/?appName=Cluster0')
 .then(()=>console.log('MongoDB Connected'))
 .catch(err=>console.log('Mongo Error:', err))
 
