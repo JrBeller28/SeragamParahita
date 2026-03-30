@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard Admin - Parahita</title>
+  <title>Admin Dashboard - Parahita</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -16,15 +16,12 @@
 
 <div class="p-6 max-w-7xl mx-auto">
 
-  <!-- 🔔 NOTIFIKASI -->
-  <div id="notif" class="mb-4 text-red-500 font-semibold"></div>
-
   <!-- STATS -->
   <div class="grid md:grid-cols-3 gap-4 mb-6">
 
     <div class="bg-white p-6 rounded-xl shadow">
-      <p class="text-sm text-slate-500">Total Hubungi Kami</p>
-      <h2 id="totalData" class="text-2xl font-bold">0</h2>
+      <p class="text-sm text-slate-500">Total Order</p>
+      <h2 id="totalOrder" class="text-2xl font-bold">0</h2>
     </div>
 
     <div class="bg-white p-6 rounded-xl shadow">
@@ -34,23 +31,22 @@
 
     <div class="bg-white p-6 rounded-xl shadow">
       <p class="text-sm text-slate-500">Hari Ini</p>
-      <h2 id="todayData" class="text-2xl font-bold">0</h2>
+      <h2 id="todayOrder" class="text-2xl font-bold">0</h2>
     </div>
 
   </div>
 
   <!-- TABLE -->
   <div class="bg-white rounded-xl shadow p-6">
-    <h2 class="font-bold mb-4">Data Hubungi Kami</h2>
+    <h2 class="font-bold mb-4">Data Order</h2>
 
     <table class="w-full border">
       <thead>
         <tr class="bg-slate-200 text-left">
-          <th class="p-2">Nama</th>
+          <th class="p-2">Perusahaan</th>
           <th>Email</th>
           <th>Detail</th>
           <th>Tanggal</th>
-          <th>Status</th>
         </tr>
       </thead>
       <tbody id="orderList"></tbody>
@@ -93,6 +89,7 @@ async function loadData(){
           <td>${o.detail}</td>
           <td>${date}</td>
         </tr>
+      `
     })
 
     // SET STATS
@@ -105,9 +102,6 @@ async function loadData(){
     console.log(err)
   }
 }
-
-// 🔁 AUTO REFRESH
-setInterval(loadData, 5000)
 
 // LOGOUT
 function logout(){
