@@ -7,9 +7,14 @@ app.use(cors())
 app.use(express.json())
 
 // GANTI DENGAN URL MONGODB KAMU
-mongoose.connect('mongodb+srv://admin:<db_password>@cluster0.hrloeif.mongodb.net/?appName=Cluster0')
+mongoose.connect('mongodb+srv://admin:<db_parahita2026>@cluster0.hrloeif.mongodb.net/?appName=Cluster0')
 .then(()=>console.log('MongoDB Connected'))
-.catch(err=>console.log(err))
+.catch(err=>console.log('Mongo Error:', err))
+
+// ROOT TEST
+app.get('/', (req,res)=>{
+  res.send('Backend jalan 🚀')
+})
 
 // SCHEMA
 const OrderSchema = new mongoose.Schema({
@@ -33,7 +38,7 @@ app.get('/orders', async (req,res)=>{
   res.json(orders)
 })
 
-// PORT FIX
+// PORT
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
   console.log('Server jalan di port ' + PORT)
