@@ -6,6 +6,16 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+app.post('/login',(req,res)=>{
+  const {username,password} = req.body
+
+  if(username==='admin' && password==='admin123'){
+    res.json({success:true})
+  } else {
+    res.json({success:false})
+  }
+})
+
 // CONNECT MONGODB
 mongoose.connect('mongodb+srv://admin:<db_password>@cluster0.hrloeif.mongodb.net/?appName=Cluster0')
 .then(()=>console.log('MongoDB Connected'))
