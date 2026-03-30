@@ -101,19 +101,22 @@
   <section id="contact" class="py-24 max-w-4xl mx-auto px-6">
     <h3 class="text-3xl font-bold mb-6 text-center">Hubungi Kami</h3>
     <form class="grid gap-4" onsubmit="kirimForm(event)">
-      <input type="text" placeholder="Nama Perusahaan" class="p-3 bg-white border border-slate-300 rounded" />
-      <input type="email" placeholder="Email" class="p-3 bg-white border border-slate-300 rounded" />
-      <textarea placeholder="Detail" class="p-3 bg-white border border-slate-300 rounded"></textarea>
-       <button onclick="saveOrder()" class="bg-teal-600 text-white w-full py-2 rounded">Kirim Permintaan</button>
+      <input id="company" type="text" placeholder="Nama Perusahaan" class="p-3 bg-white border border-slate-300 rounded" />
+      <input id="email" type="email" placeholder="Email" class="p-3 bg-white border border-slate-300 rounded" />
+      <textarea id="detail" placeholder="Kebutuhan Proyek" class="p-3 bg-white border border-slate-300 rounded"></textarea>
+      <button onclick="saveOrder()" class="bg-teal-600 text-white w-full py-2 rounded">Kirim Permintaan</button>
     </form>
   </section>
   <script>
 const API = 'https://seragamparahita-production.up.railway.app'
-async function saveOrder(){
+
+async function kirimForm(e){
+  e.preventDefault()
+
   const data = {
     company: document.getElementById('company').value,
     email: document.getElementById('email').value,
-    detail: document.getElementById('Detail').value
+    detail: document.getElementById('detail').value
   }
 
   try {
@@ -124,14 +127,13 @@ async function saveOrder(){
     })
 
     alert('Permintaan berhasil dikirim!')
-    closeOrder()
+    e.target.reset()
 
-  } catch (err){
-    alert('Server error')
+  } catch(err){
+    alert('Gagal kirim, coba lagi')
     console.log(err)
   }
 }
-
 </script>
 
   <!-- Footer -->
