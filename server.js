@@ -6,7 +6,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// LOGIN ROUTE
+// 🔐 LOGIN
 app.post('/login',(req,res)=>{
   const {username,password} = req.body
 
@@ -15,11 +15,6 @@ app.post('/login',(req,res)=>{
   } else {
     res.json({success:false})
   }
-})
-
-// DEBUG GLOBAL
-process.on('uncaughtException', err => {
-  console.error('UNCAUGHT ERROR:', err)
 })
 
 // ROOT
@@ -32,21 +27,22 @@ mongoose.connect('mongodb+srv://admin:parahita2026@cluster0.hrloeif.mongodb.net/
 .then(()=>console.log('MongoDB Connected'))
 .catch(err=>console.log('Mongo Error:', err))
 
-// SCHEMA
+// ✅ SCHEMA HUBUNGI KAMI
 const ContactSchema = new mongoose.Schema({
-  company: String,
+  nama: String,
   email: String,
   detail: String,
+  read: { type: Boolean, default: false }, // 🔥 penting
   created_at: { type: Date, default: Date.now }
 })
 
-const Order = mongoose.model('Order', OrderSchema)
+const Contact = mongoose.model('Contact', ContactSchema)
 
-// ROUTES
-app.post('/orders', async (req,res)=>{
+// ✅ SIMPAN DATA
+app.post('/contact', async (req,res)=>{
   try {
-    const order = new Order(req.body)
-    await order.save()
+    const data = new Contact(req.body)
+    await data.save()
     res.json({success:true})
   } catch(err){
     console.log(err)
@@ -54,12 +50,19 @@ app.post('/orders', async (req,res)=>{
   }
 })
 
-app.get('/orders', async (req,res)=>{
-  const data = await Order.find()
+// ✅ AMBIL DATA
+app.get('/contact', async (req,res)=>{
+  const data = await Contact.find().sort({created_at:-1})
   res.json(data)
 })
 
-// PORT WAJIB
+// ✅ TANDAI DIBACA
+app.put('/contact/:id', async (req,res)=>{
+  await Contact.findByIdAndUpdate(req.params.id, { read: true })
+  res.json({success:true})
+})
+
+// PORT
 const PORT = process.env.PORT || 3000
 app.listen(PORT, ()=>{
   console.log('Running on port ' + PORT)
